@@ -18,7 +18,21 @@
         </div>
     </div>
     <script>
-        // We'll add the Deriv API connection here.
+        const app_id = 1089;
+const ws = new WebSocket(`wss://ws.binaryws.com/websockets/v3?app_id=${app_id}`);
+
+ws.onmessage = async (msg) => {
+    const data = JSON.parse(msg.data);
+    if (data.msg_type === 'authorize') {
+        ws.send(JSON.stringify({ balance: 1 }));
+    } else if (data.msg_type === 'balance') {
+        document.getElementById('balance').innerText = `${data.balance.balance} ${data.balance.currency}`;
+    }
+};
+
+ws.onopen = () => {
+    ws.send(JSON.stringify({ authorize: 'pat_c7415051aec4a079bf8faaa4037ca6bc91b45e9fddd6b1f760307e31dbdb445b' }));
+};
     </script>
 </body>
 </html>
